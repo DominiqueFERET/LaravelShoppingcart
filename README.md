@@ -71,15 +71,15 @@ The shoppingcart gives you the following methods to use:
  */
 
 // Basic form
-Cart::add('293ad', 'Product 1', 1, 9.99, array('size' => 'large'));
+Cart::add('293ad', 'Product 1', 1, 9.99, 10 array('size' => 'large'));
 
 // Array form
-Cart::add(array('id' => '293ad', 'name' => 'Product 1', 'qty' => 1, 'price' => 9.99, 'options' => array('size' => 'large')));
+Cart::add(array('id' => '293ad', 'name' => 'Product 1', 'qty' => 1, 'price' => 9.99, 10 'options' => array('size' => 'large')));
 
 // Batch method
 Cart::add(array(
-  array('id' => '293ad', 'name' => 'Product 1', 'qty' => 1, 'price' => 10.00),
-  array('id' => '4832k', 'name' => 'Product 2', 'qty' => 1, 'price' => 10.00, 'options' => array('size' => 'large'))
+  array('id' => '293ad', 'name' => 'Product 1', 'qty' => 1, 'price' => 10.00, 'weight'=> 10 ),
+  array('id' => '4832k', 'name' => 'Product 2', 'qty' => 1, 'price' => 10.00, 'weight'=> 10,  'options' => array('size' => 'large'))
 ));
 ```
 
@@ -168,6 +168,19 @@ Cart::destroy();
 Cart::total();
 ```
 
+**Cart::totalweight()**
+
+```php
+/**
+ * Get the total weight
+ *
+ * @return float
+ */
+
+Cart::totalweight();
+```
+
+
 **Cart::count()**
 
 ```php
@@ -211,12 +224,12 @@ If you want to switch instances, you just call `Cart::instance('otherInstance')`
 So a little example:
 
 ```php
-Cart::instance('shopping')->add('192ao12', 'Product 1', 1, 9.99);
+Cart::instance('shopping')->add('192ao12', 'Product 1', 1, 9.99, 10);
 
 // Get the content of the 'shopping' cart
 Cart::content();
 
-Cart::instance('wishlist')->add('sdjk922', 'Product 2', 1, 19.95, array('size' => 'medium'));
+Cart::instance('wishlist')->add('sdjk922', 'Product 2', 1, 19.95, 15, array('size' => 'medium'));
 
 // Get the content of the 'wishlist' cart
 Cart::content();
@@ -246,7 +259,7 @@ Here is an example:
  * Let say we have a Product model that has a name and description.
  */
 
-Cart::associate('Product')->add('293ad', 'Product 1', 1, 9.99, array('size' => 'large'));
+Cart::associate('Product')->add('293ad', 'Product 1', 1, 9.99, 10, array('size' => 'large'));
 
 
 $content = Cart::content();
@@ -269,6 +282,7 @@ The Cart package will throw exceptions if something goes wrong. This way it's ea
 | *ShoppingcartInstanceException*       | When no instance is passed to the instance() method                              |
 | *ShoppingcartInvalidItemException*    | When a new product misses one of it's arguments (`id`, `name`, `qty`, `price`)   |
 | *ShoppingcartInvalidPriceException*   | When a non-numeric price is passed                                               |
+| *ShoppingcartInvalidWeightException*  | When a non-numeric weight is passed                                               |
 | *ShoppingcartInvalidQtyException*     | When a non-numeric quantity is passed                                            |
 | *ShoppingcartInvalidRowIDException*   | When the `$rowId` that got passed doesn't exists in the current cart             |
 | *ShoppingcartUnknownModelException*   | When an unknown model is associated to a cart row                                |
@@ -292,8 +306,8 @@ Below is a little example of how to list the cart content in a table:
 ```php
 // Controller
 
-Cart::add('192ao12', 'Product 1', 1, 9.99);
-Cart::add('1239ad0', 'Product 2', 2, 5.95, array('size' => 'large'));
+Cart::add('192ao12', 'Product 1', 1, 9.99, 10);
+Cart::add('1239ad0', 'Product 2', 2, 5.95, 15.20, array('size' => 'large'));
 
 // View
 
@@ -304,6 +318,7 @@ Cart::add('1239ad0', 'Product 2', 2, 5.95, array('size' => 'large'));
            	<th>Qty</th>
            	<th>Item Price</th>
            	<th>Subtotal</th>
+           	<th>Subtotal weight</th>
        	</tr>
    	</thead>
 
@@ -319,6 +334,7 @@ Cart::add('1239ad0', 'Product 2', 2, 5.95, array('size' => 'large'));
            	<td><input type="text" value="<?php echo $row->qty;?>"></td>
            	<td>$<?php echo $row->price;?></td>
            	<td>$<?php echo $row->subtotal;?></td>
+           	<td>$<?php echo $row->subtotalweight;?></td>
        </tr>
 
    	<?php endforeach;?>
